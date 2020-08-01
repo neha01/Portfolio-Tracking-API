@@ -12,7 +12,7 @@ async function initialize(app) {
     app.use(morgan(config.get('morgan.format'), { "stream": logger.stream }));
     Db.connect(config.get('db'));
     loadRoutes(app);
-    app.listen(config.get('api.port'));
+    app.listen(process.env.PORT || config.get('api.port'));
 }
 
 initialize(app);
