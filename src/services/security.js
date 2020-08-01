@@ -77,8 +77,9 @@ class SecurityService {
     async updateSecurityWhenTradeDeleted(security, trade) {
         let { ticker, averagePrice: oldAveragePrice, quantity: oldQuantity } = security;
         oldAveragePrice = new BigNumber(oldAveragePrice);
-        let oldTradeQuantity = new BigNumber(trade.old.quantity);
         let oldTradePrice = new BigNumber(trade.old.price);
+        let oldTradeQuantity = trade.old.quantity;
+
 
         let totalPriceWithoutTrade = null;
         let totalQuantityWithoutTrade = null;
