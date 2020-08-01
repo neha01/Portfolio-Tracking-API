@@ -20,16 +20,16 @@ class TradeService {
             const oldQuantity = security.quantity;
             const changeInQuantity = operation === 'BUY' ? oldQuantity + tradeQuantity : oldQuantity - tradeQuantity;
             if (changeInQuantity < 0) throw new Error('Invalid trade : You dont have enough shares to execute this trade');
-            result = await TradeModel.create(data);
             const tradeData = {
                 trade: {
                     new: data
                 }
             };
             await SecurityService.updateSecurity(ticker, operation, tradeData, 'TRADE_CREATED');
-        } else if (operation === 'BUY') { //security doesn't exist in portfolio; so create new security
             result = await TradeModel.create(data);
+        } else if (operation === 'BUY') { //security doesn't exist in portfolio; so create new security
             await SecurityService.createSecurity({ ticker, averagePrice: price, quantity: tradeQuantity });
+            result = await TradeModel.create(data);
         } else {
             //The operation is Sell but there is no corresponding security to sell in portfolio
             throw new Error('Invalid trade : You dont have enough shares to execute this trade')
@@ -60,13 +60,13 @@ class TradeService {
         if (operation === 'BUY') {
             const changeInQuantity = oldQuantity + changeInTradeQuantity;
             if (changeInQuantity < 0) throw new Error('Invalid trade :You dont have enough shares to execute this trade');// this can happen when all quantities were sold off and now buy trade is being updated
-            result = await TradeModel.findOneAndUpdate({ _id: tradeId }, data, { new: true });
             await SecurityService.updateSecurity(ticker, operation, tradeData, 'TRADE_UPDATED');
+            result = await TradeModel.findOneAndUpdate({ _id: tradeId }, data, { new: true });
         } else { // Sell operation
             const changeInQuantity = oldQuantity - changeInTradeQuantity; // final quantity of shares after upadting trade 
             if (changeInQuantity < 0) throw new Error('Invalid trade : You dont have enough shares to execute this trade');
-            result = await TradeModel.findOneAndUpdate({ _id: tradeId }, data, { new: true });
             await SecurityService.updateSecurity(ticker, operation, tradeData, 'TRADE_UPDATED');
+            result = await TradeModel.findOneAndUpdate({ _id: tradeId }, data, { new: true });
         }
         return result;
     }
