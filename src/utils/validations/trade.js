@@ -15,7 +15,7 @@ const schema = Joi.object({
 
     price: Joi.number()
         .integer()
-        .min(0),
+        .min(1),
 
     quantity: Joi.number()
         .integer()
