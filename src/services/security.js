@@ -68,7 +68,7 @@ class SecurityService {
         let finalQuantity = trade.new.operation === 'BUY' ?
             oldQuantity + newTradeQuantity - oldTradeQuantity
             : oldQuantity - (newTradeQuantity - oldTradeQuantity); //calculate quantity with updated trade data
-        let finalWeightedAverage = finalTotalPrice.dividedBy(finalQuantity); // calculate average price with updated trade data
+        let finalWeightedAverage = finalQuantity == 0 ? "0" : finalTotalPrice.dividedBy(finalQuantity); // calculate average price with updated trade data
 
         await SecurityModel.findOneAndUpdate({ ticker },
             { quantity: finalQuantity, averagePrice: finalWeightedAverage });
@@ -89,7 +89,7 @@ class SecurityService {
             if (totalQuantityWithoutTrade < 0) throw new Error('Error: This Trade cannot be deleted');
             totalPriceWithoutTrade = oldAveragePrice.multipliedBy(oldQuantity)
                 .minus(oldTradePrice.multipliedBy(oldTradeQuantity));// remove trade details from average price calculations
-            finalWeightedAverage = totalPriceWithoutTrade.dividedBy(totalQuantityWithoutTrade);
+            finalWeightedAverage = totalQuantityWithoutTrade == 0 ? "0" : totalPriceWithoutTrade.dividedBy(totalQuantityWithoutTrade);
         } else {
             totalQuantityWithoutTrade = oldQuantity + oldTradeQuantity;
             totalPriceWithoutTrade = oldAveragePrice.multipliedBy(oldQuantity)
