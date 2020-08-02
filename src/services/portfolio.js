@@ -32,7 +32,7 @@ class PortfolioService {
       {
         $project: {
           _id: 1,
-          currentPrice: { $round: [{ $toDouble: '$currentPrice' }, 4] },
+          currentPrice: { $round: [{ $toDouble: '$currentPrice' }, 4] }, // rounding price to 4 decimal places
           ticker: 1,
           averagePrice: { $round: [{ $toDouble: '$averagePrice' }, 4] },
           quantity: 1,
@@ -68,7 +68,7 @@ class PortfolioService {
         },
       },
     ]);
-    return returns[0];
+    return returns[0] || [];
   }
 }
 
