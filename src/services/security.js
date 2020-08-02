@@ -1,6 +1,4 @@
-/* eslint-disable class-methods-use-this */
 const BigNumber = require('bignumber.js');
-
 const SecurityModel = require('../models/security');
 
 class SecurityService {

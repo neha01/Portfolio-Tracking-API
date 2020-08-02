@@ -1,8 +1,7 @@
 const express = require('express');
+const portfolioController = require('../controllers/portfolio');
 
 const router = express.Router();
-
-const portfolioController = require('../controllers/portfolio');
 
 router.get('/portfolio', portfolioController.getPortfolio);
 router.get('/portfolio/holdings', portfolioController.getHoldings);

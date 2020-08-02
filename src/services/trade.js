@@ -1,13 +1,7 @@
-/* eslint-disable class-methods-use-this */
-
 const SecurityService = require('./security');
-
 const tradeSchema = require('../utils/validations/trade');
-
 const updateTradeSchema = require('../utils/validations/updateTrade');
-
 const TradeModel = require('../models/trade');
-
 const SecurityModel = require('../models/security');
 
 class TradeService {

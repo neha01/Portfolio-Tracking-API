@@ -1,6 +1,4 @@
-/* eslint-disable class-methods-use-this */
 const TradeModel = require('../models/trade');
-
 const SecurityModel = require('../models/security');
 
 class PortfolioService {
