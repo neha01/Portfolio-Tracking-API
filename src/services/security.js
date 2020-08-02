@@ -84,21 +84,27 @@ class SecurityService {
     const oldTradeQuantity = trade.old.quantity;
     const oldTradePrice = new BigNumber(trade.old.price);
 
-    const totalPriceWithoutTrade = oldAveragePrice
-      .multipliedBy(oldQuantity)
-      .minus(oldTradePrice.multipliedBy(oldTradeQuantity)); // remove old trade calculations from average price calculations
+    let totalPriceWithoutTrade = null;
+    let finalWeightedAverage = null;
+    let finalQuantity = null;
+    if (trade.new.operation === 'BUY') {
+      totalPriceWithoutTrade = oldAveragePrice
+        .multipliedBy(oldQuantity)
+        .minus(oldTradePrice.multipliedBy(oldTradeQuantity)); // remove old trade calculations from Average Price calculations
 
-    const finalTotalPrice = totalPriceWithoutTrade.plus(
-      newTradePrice.multipliedBy(newTradeQuantity)
-    );
-    const finalQuantity =
-      trade.new.operation === 'BUY'
-        ? oldQuantity + newTradeQuantity - oldTradeQuantity
-        : oldQuantity - (newTradeQuantity - oldTradeQuantity); // calculate quantity with updated trade data
-    const finalWeightedAverage =
-      Number(finalQuantity) === 0
-        ? '0'
-        : finalTotalPrice.dividedBy(finalQuantity); // calculate average price with updated trade data
+      const finalTotalPrice = totalPriceWithoutTrade.plus(
+        newTradePrice.multipliedBy(newTradeQuantity)
+      );
+      finalQuantity = oldQuantity + newTradeQuantity - oldTradeQuantity; // calculate Quantity with updated trade data
+
+      finalWeightedAverage =
+        Number(finalQuantity) === 0
+          ? '0'
+          : finalTotalPrice.dividedBy(finalQuantity); // calculate average price with updated trade data
+    } else {
+      finalQuantity = oldQuantity - (newTradeQuantity - oldTradeQuantity);
+      finalWeightedAverage = oldAveragePrice; // sell operation doent affect average price
+    }
 
     await SecurityModel.findOneAndUpdate(
       { ticker },
