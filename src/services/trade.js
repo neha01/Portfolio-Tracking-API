@@ -82,44 +82,28 @@ class TradeService {
     const changeInTradeQuantity = updatedTradeQuantity - tradeQuantity;
     const tradeData = {
       trade: {
-        new: Object.assign(data, { ticker, operation }),
+        new: { ...data, ticker, operation },
         old: oldTrade,
       },
     };
-    let result = null;
-    if (operation === 'BUY') {
-      const changeInQuantity = oldQuantity + changeInTradeQuantity;
-      if (changeInQuantity < 0)
-        throw new Error(
-          'Invalid trade :You dont have enough shares to execute this trade'
-        ); // this can happen when all quantities were sold off and now buy trade is being updated
-      await SecurityService.updateSecurity(
-        ticker,
-        operation,
-        tradeData,
-        'TRADE_UPDATED'
-      );
-      result = await TradeModel.findOneAndUpdate({ _id: tradeId }, data, {
-        new: true,
-      });
-    } else {
-      // Sell operation
-      const changeInQuantity = oldQuantity - changeInTradeQuantity; // final quantity of shares after upadting trade
-      if (changeInQuantity < 0)
-        throw new Error(
-          'Invalid trade : You dont have enough shares to execute this trade'
-        );
-      await SecurityService.updateSecurity(
-        ticker,
-        operation,
-        tradeData,
-        'TRADE_UPDATED'
-      );
-      result = await TradeModel.findOneAndUpdate({ _id: tradeId }, data, {
-        new: true,
-      });
-    }
-    return result;
+    const changeInQuantity =
+      operation === 'BUY'
+        ? oldQuantity + changeInTradeQuantity
+        : oldQuantity - changeInTradeQuantity;
+    if (changeInQuantity < 0)
+      throw new Error(
+        'Invalid trade :You dont have enough shares to execute this trade'
+      ); // this can happen when all quantities were sold off and now buy trade is being updated
+    await SecurityService.updateSecurity(
+      ticker,
+      operation,
+      tradeData,
+      'TRADE_UPDATED'
+    );
+
+    return TradeModel.findOneAndUpdate({ _id: tradeId }, data, {
+      new: true,
+    });
   }
 
   async removeTrade(tradeId) {
