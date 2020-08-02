@@ -1,8 +1,7 @@
 const express = require('express');
+const tradeController = require('../controllers/trade');
 
 const router = express.Router();
-
-const tradeController = require('../controllers/trade');
 
 router.post(
   '/portfolio/securities/:ticker/trades',
