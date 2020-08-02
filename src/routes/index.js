@@ -1,3 +1,5 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
 const path = require('path');
 
 const routes = [
@@ -13,7 +15,7 @@ const routes = [
 function init(app) {
   routes.forEach((route) => {
     const routePath = path.resolve(__dirname, `./${route.fileName}`);
-    app.use(route.mount, `require(${routePath})`);
+    app.use(route.mount, require(routePath));
   });
   app.use('/', (req, res) => {
     res.write('<h1>Welcome to Portfolio Tracking API<h1>');
