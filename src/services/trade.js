@@ -15,7 +15,6 @@ class TradeService {
     data = await tradeSchema.validateAsync(data); // validate and transform data with Joi
     const { ticker, operation, price, quantity: tradeQuantity } = data;
     const security = await SecurityModel.findOne({ ticker }).lean();
-    let result = null;
     if (security) {
       // security already exists,update avgPrice ,quantity & create new trade
       const oldQuantity = security.quantity;
@@ -38,7 +37,6 @@ class TradeService {
         tradeData,
         'TRADE_CREATED'
       );
-      result = await TradeModel.create(data);
     } else if (operation === 'BUY') {
       // security doesn't exist in portfolio; so create new security
       await SecurityService.createSecurity({
@@ -46,7 +44,6 @@ class TradeService {
         averagePrice: price,
         quantity: tradeQuantity,
       });
-      result = await TradeModel.create(data);
     } else {
       // The operation is Sell,
       // but there is no corresponding security to sell in portfolio
@@ -54,7 +51,7 @@ class TradeService {
         'Invalid trade : You dont have enough shares to execute this trade'
       );
     }
-    return result;
+    return TradeModel.create(data);
   }
 
   async updateTrade(data, tradeId) {
