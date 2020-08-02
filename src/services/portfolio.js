@@ -42,7 +42,7 @@ class PortfolioService {
   }
 
   async getReturns() {
-    const returns = SecurityModel.aggregate([
+    const returns = await SecurityModel.aggregate([
       {
         $group: {
           _id: null,
