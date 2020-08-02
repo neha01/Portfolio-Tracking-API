@@ -62,6 +62,7 @@ class TradeService {
     data = await updateTradeSchema.validateAsync(data); // validate and transform data with Joi
     const { price: updatedTradePrice, quantity: updatedTradeQuantity } = data;
     const oldTrade = await TradeModel.findOne({ _id: tradeId }).lean();
+    if (!oldTrade) throw new Error('Please input Valid TradeId');
     const {
       ticker,
       operation,
@@ -124,6 +125,7 @@ class TradeService {
 
   async removeTrade(tradeId) {
     const oldTrade = await TradeModel.findOne({ _id: tradeId }).lean();
+    if (!oldTrade) throw new Error('Please input Valid TradeId');
     const { ticker, operation } = oldTrade;
     await SecurityService.updateSecurity(
       ticker,
