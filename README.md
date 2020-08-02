@@ -23,7 +23,7 @@ Above command will start the server on 'dev' environment with default configurat
 ## Assumptions and Edge Cases handling
 1. **Update Trade:**  <br>
 Only the price and quantity of trade can be updated.<br>
-In case user wants to change the operation for instance from BUY to SELL; then the user can delete this trade ; and place a new trade.<br>
+Note updating the operation of a trade is not allowed : In case user wants to change the operation of a trade for instance from BUY to SELL; then the user can delete that trade ; and place a new trade.<br>
 **In Some cases the trade cannot be updated.**<br>
 Suppose a trade for BUY 5 shares of 'INFY' is placed.<br>
 Then another trade for SELL 5 shares of 'INFY' is placed <br>
